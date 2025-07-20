@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your Password</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
+                <div class="reset-card">
+                    <!-- Header -->
+                    <div class="reset-header text-center mb-4">
+                        <div class="logo-container mb-3">
+                            <img src="dummy_logo_dark.png" width="80" alt="Dummy Logo">
+                        </div>
+                        <h2 class="reset-title">Reset Password</h2>
+                        <p class="reset-subtitle">Enter your new password below</p>
+                    </div>
+
+                    <!-- Alert Messages -->
+                    <div id="alertContainer" class="mb-3"></div>
+
+                    <!-- Reset Form -->
+                    <form id="resetForm" class="reset-form" novalidate>
+                        <!-- New Password Field -->
+                        <div class="form-group mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <div class="password-input-container">
+                                <input 
+                                    type="password" 
+                                    class="form-control password-input" 
+                                    id="newPassword" 
+                                    name="newPassword"
+                                    placeholder="Enter your new password"
+                                    required
+                                    minlength="8"
+                                >
+                                <button type="button" class="password-toggle" id="toggleNewPassword">
+                                    <i data-feather="eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                            
+                            <!-- Password Strength Indicator -->
+                            <div class="password-strength mt-2">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <div class="strength-text" id="strengthText">Password strength</div>
+                                <div class="strength-requirements mt-2">
+                                    <div class="requirement" id="lengthReq">
+                                        <i data-feather="circle" class="req-icon"></i>
+                                        <span>At least 8 characters</span>
+                                    </div>
+                                    <div class="requirement" id="upperReq">
+                                        <i data-feather="circle" class="req-icon"></i>
+                                        <span>One uppercase letter</span>
+                                    </div>
+                                    <div class="requirement" id="lowerReq">
+                                        <i data-feather="circle" class="req-icon"></i>
+                                        <span>One lowercase letter</span>
+                                    </div>
+                                    <div class="requirement" id="numberReq">
+                                        <i data-feather="circle" class="req-icon"></i>
+                                        <span>One number</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="form-group mb-4">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <div class="password-input-container">
+                                <input 
+                                    type="password" 
+                                    class="form-control password-input" 
+                                    id="confirmPassword" 
+                                    name="confirmPassword"
+                                    placeholder="Confirm your new password"
+                                    required
+                                >
+                                <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                                    <i data-feather="eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary btn-reset w-100 mb-3" id="resetBtn">
+                            <span class="btn-text">Update Password</span>
+                            <span class="btn-loading d-none">
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                Updating...
+                            </span>
+                        </button>
+
+                        <!-- Back to Login Link -->
+                        <div class="text-center">
+                            <a href="#" class="back-link">
+                                <i data-feather="arrow-left"></i>
+                                Back to login
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="reset_password.js"></script>
+    
+    <!-- Initialize Feather Icons -->
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>
