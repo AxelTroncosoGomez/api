@@ -39,6 +39,7 @@ body {
     padding: 2.5rem 2rem;
     transition: var(--transition);
     border: 1px solid rgba(141, 178, 221, 0.1);
+    min-width: 390px;
 }
 
 .reset-card:hover {
