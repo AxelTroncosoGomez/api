@@ -61,7 +61,7 @@
 </head>
 <body>
   <!-- Logo that switches on dark mode -->
-  <img id="logo" class="logo" src="dummy_logo_dark.png" width="300" alt="Dummy Logo">
+  <img id="logo" class="logo" src="dummy_logo_dark.png" width="270" alt="Dummy Logo">
 
   <!-- Message output container -->
   <div id="infoContainer" class="mb-3"></div>
@@ -91,7 +91,8 @@
     const type = searchParams.get('type');
 
     if (accessToken && refreshToken) {
-      showMessage(`<h2>✅ Email verified successfully.</h2><p><b>Access Token:</b> ${accessToken}</p>`);
+      // showMessage(`<h2>✅ Email verified successfully.</h2><p><b>Access Token:</b> ${accessToken}</p>`);
+      showMessage(`<h2>✅ Email verified successfully.</h2>`);
     } else if (tokenFromQuery && type === 'signup') {
       // async inside module script is allowed
       (async () => {

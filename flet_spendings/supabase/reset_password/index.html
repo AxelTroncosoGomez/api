@@ -27,7 +27,6 @@
 <body>
     <!-- Alert Messages -->
     <div id="alertContainer" class="mb-3"></div>
-    <div id="infoContainer" class="mb-3"></div>
     <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
         <div class="row w-100 justify-content-center">
             <div class="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
@@ -94,6 +93,7 @@
                 </div>
             </div>
         </div>
+        <div id="infoContainer" class="mb-3"></div>
     </div>
 
     <!-- Bootstrap 5 JS -->
@@ -113,37 +113,31 @@
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
         const supabaseUrl = 'https://nzfrskgdvdhdfghjtaks.supabase.co';
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56ZnJza2tkdmRoZGZnaGp0YWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MzAwMTMsImV4cCI6MjA2ODEwNjAxM30.Y9ub1e4oaIDoIGXxoAJkC_WJtZVxknSlRpOfID0EYVE';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // (shortened for brevity)
         const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-        // Extract access_token from URL
+        // Parse token from URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const params = new URLSearchParams(window.location.search);
+        const searchParams = new URLSearchParams(window.location.search);
+
         const accessToken = hashParams.get('access_token');
         const refreshToken = hashParams.get('refresh_token');
-        const tokenFromQuery = searchParams.get('token');
+        // const tokenFromQuery = searchParams.get('token');
+        // const type = searchParams.get('type');
 
         // Authenticate temporarily
-        if (accessToken) {
-          const infocontainer = document.getElementById("infoContainer");
-          infocontainer.innerHTML = `
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-              Token ${tokenFromQuery}
-              Acess Token ${accessToken}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          `;
+        if (accessToken && refreshToken) {
+            showInfo(accessToken)
+            const { data, error } = await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken
+            });
 
-          const { data, error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
-
-          if (error) {
-            showAlert("Invalid or expired recovery link.", "danger");
-          }
+            if (error) {
+                showAlert("Invalid or expired recovery link.", "danger");
+            }
         } else {
-          showAlert("No recovery token found. Please request a new password reset.", "danger");
+            showAlert("No recovery token found. Please request a new password reset.", "danger");
         }
 
         // Form logic
@@ -173,6 +167,16 @@
           const container = document.getElementById("alertContainer");
           container.innerHTML = `
             <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+              ${message}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          `;
+        }
+
+        function showInfo(message) {
+          const informationcontainer = document.getElementById("infoContainer");
+          informationcontainer.innerHTML = `
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
               ${message}
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
