@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DummyDev - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap CSS (optional if you're using it) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <script>
+        // Detect system theme
+        const darkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (darkTheme) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+
+    <!-- Your custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container vh-100 d-flex flex-column justify-content-center align-items-center text-center">
+        
+        <!-- Logo -->
+        <img src="dummy_logo_dark.png" alt="DummyDev Logo" id="logo" class="mb-4" style="max-width: 150px;">
+
+        <!-- Message -->
+        <h1 class="mb-3">Welcome to DummyDev</h1>
+        <p class="lead">We're working hard to build the best cross-platform app in the world. Stay tuned!</p>
+
+        <!-- Socials -->
+        <div class="d-flex gap-4 mt-4">
+            <a href="https://twitter.com/dummydev" target="_blank" class="icon-socials" aria-label="Twitter">
+                <i data-feather="twitter"></i>
+            </a>
+            <a href="https://github.com/dummydev" target="_blank" class="icon-socials" aria-label="GitHub">
+                <i data-feather="github"></i>
+            </a>
+            <a href="mailto:contact@dummydev.com" class="icon-socials" aria-label="Email">
+                <i data-feather="mail"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Change logo
+        const logo = document.getElementById("logo");
+        logo.src = darkTheme ? "dummy_logo_light.png" : "dummy_logo_dark.png";   
+    </script>
+
+    <!-- Feather render -->
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>
