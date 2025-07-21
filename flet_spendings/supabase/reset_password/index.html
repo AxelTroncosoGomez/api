@@ -11,6 +11,16 @@
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
     
+    <script>
+        // Detect system theme
+        const darkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (darkTheme) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="custom.css">
 </head>
@@ -25,7 +35,7 @@
                     <!-- Header -->
                     <div class="reset-header text-center mb-4">
                         <div class="logo-container mb-3">
-                            <img src="dummy_logo_dark.png" width="80" alt="Dummy Logo">
+                            <img src="dummy_logo_dark.png" width="80" alt="Dummy Logo" id="logo">
                         </div>
                         <h2 class="reset-title">Reset Password</h2>
                         <p class="reset-subtitle">Enter your new password below</p>
@@ -47,7 +57,7 @@
                                     required minlength="8"
                                 >
                                 <button type="button" class="password-toggle" id="toggleNewPassword">
-                                    <i data-feather="eye"></i>
+                                    <i data-feather="eye-off"></i>
                                 </button>
                             </div>
                             <div class="invalid-feedback"></div>
@@ -66,7 +76,7 @@
                                     required
                                 >
                                 <button type="button" class="password-toggle" id="toggleConfirmPassword">
-                                    <i data-feather="eye"></i>
+                                    <i data-feather="eye-off"></i>
                                 </button>
                             </div>
                             <div class="invalid-feedback"></div>
@@ -84,6 +94,9 @@
                 </div>
             </div>
         </div>
+        <!-- Alert Messages -->
+        <div id="alertContainer" class="mb-3"></div>
+        <div id="infoContainer" class="mb-3"></div>
     </div>
 
     <!-- Bootstrap 5 JS -->
@@ -94,9 +107,12 @@
   <script>
     feather.replace();
   </script>
-
     <!-- Supabase Client + Password Reset Logic -->
     <script type="module">
+        // Change logo
+        const logo = document.getElementById("logo");
+        logo.src = darkTheme ? "dummy_logo_light.png" : "dummy_logo_dark.png";
+
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
         const supabaseUrl = 'https://nzfrskgdvdhdfghjtaks.supabase.co';
@@ -163,14 +179,28 @@
           `;
         }
 
-        // Password toggle
+        // Helper function to toggle password visibility and icon
+        function togglePasswordVisibility(inputId, toggleBtnId) {
+            const input = document.getElementById(inputId);
+            const toggleBtn = document.getElementById(toggleBtnId);
+            const icon = toggleBtn.querySelector("i");
+
+            const isPasswordHidden = input.type === "password";
+            input.type = isPasswordHidden ? "text" : "password";
+
+            // Swap the icon
+            // not working
+            icon.setAttribute("data-feather", isPasswordHidden ? "eye" : "eye-off");
+            feather.replace(); // Re-render Feather icons
+        }
+
+        // Event listeners
         document.getElementById("toggleNewPassword").addEventListener("click", () => {
-          const input = document.getElementById("newPassword");
-          input.type = input.type === "password" ? "text" : "password";
+            togglePasswordVisibility("newPassword", "toggleNewPassword");
         });
+
         document.getElementById("toggleConfirmPassword").addEventListener("click", () => {
-          const input = document.getElementById("confirmPassword");
-          input.type = input.type === "password" ? "text" : "password";
+            togglePasswordVisibility("confirmPassword", "toggleConfirmPassword");
         });
     </script>
     

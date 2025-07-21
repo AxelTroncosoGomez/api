@@ -3,6 +3,8 @@
     --primary-dark: #7ba0d1;
     --primary-light: #a0c2e8;
     --primary-lighter: #e8f1fb;
+    --background-palette: #e8f1fb;
+    --card-backgroud: #ffffff;
     --success-color: #28a745;
     --danger-color: #dc3545;
     --warning-color: #ffc107;
@@ -14,6 +16,28 @@
     --border-radius: 12px;
     --border-radius-sm: 8px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --btn-text-color: #ffffff;
+}
+
+:root[data-theme='dark'] {
+    --primary-color: #8db2dd;
+    --primary-dark: #7ba0d1;
+    --primary-light: #a0c2e8;
+    --primary-lighter: #1f2a36;
+    --background-palette: #101317;
+    --card-backgroud: #23262a;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --warning-color: #f1c40f;
+    --text-dark: #ecf0f1;
+    --text-muted: #95a5a6;
+    --border-color: #34495e;
+    --shadow: 0 10px 30px rgba(141, 178, 221, 0.1);
+    --shadow-hover: 0 15px 40px rgba(141, 178, 221, 0.2);
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --btn-text-color: #0f1318;
 }
 
 * {
@@ -22,7 +46,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, var(--primary-lighter) 0%, #f8f9fa 100%);
+    /*background: linear-gradient(135deg, var(--background-palette) 0%, #f8f9fa 100%);*/
+    background: var(--background-palette);
     color: var(--text-dark);
     line-height: 1.6;
     min-height: 100vh;
@@ -33,7 +58,7 @@ body {
 }
 
 .reset-card {
-    background: white;
+    background: var(--card-backgroud);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     padding: 2.5rem 2rem;
@@ -405,4 +430,13 @@ body {
 
 .loading {
     animation: pulse 1.5s ease-in-out infinite;
+}
+
+.btn-reset .btn-text {
+    color: var(--btn-text-color);
+}
+
+:root[data-theme='dark'] .btn-close {
+    filter: invert(1);
+    opacity: 0.9; /* Optional: tweak visibility */
 }

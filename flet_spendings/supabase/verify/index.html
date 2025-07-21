@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify Email</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg-light: #f9f9f9;
+      --text-light: #1e1e1e;
+      --bg-dark: #1e1e1e;
+      --text-dark: #f9f9f9;
+
+      --success-color: #4CAF50;
+      --error-color: #f44336;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .logo {
+      margin-bottom: 20px;
+    }
+
+    #infoContainer {
+      font-size: 1.2rem;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .success {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--success-color);
+      border: 1px solid var(--success-color);
+    }
+
+    .error {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: var(--error-color);
+      border: 1px solid var(--error-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo that switches on dark mode -->
+  <img id="logo" class="logo" src="dummy_logo_dark.png" width="300" alt="Dummy Logo">
+
+  <!-- Message output container -->
+  <div id="infoContainer" class="mb-3"></div>
+
+  <!-- Supabase Logic -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabaseUrl = 'https://nzfrskgdvdhdfghjtaks.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // (shortened for brevity)
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    const output = document.getElementById('infoContainer');
+
+    function showMessage(message, isSuccess = true) {
+      output.className = isSuccess ? 'success' : 'error';
+      output.innerHTML = message;
+    }
+
+    // Parse token from URL
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
+    const tokenFromQuery = searchParams.get('token');
+    const type = searchParams.get('type');
+
+    if (accessToken && refreshToken) {
+      showMessage(`<h2>✅ Email verified successfully.</h2><p><b>Access Token:</b> ${accessToken}</p>`);
+    } else if (tokenFromQuery && type === 'signup') {
+      // async inside module script is allowed
+      (async () => {
+        const { error } = await supabase.auth.verifyOtp({
+          type: 'signup',
+          token: tokenFromQuery
+        });
+
+        if (error) {
+          showMessage(`<h2>❌ Verification failed:</h2><p>${error.message}</p>`, false);
+        } else {
+          showMessage(`<h2>✅ Email verified successfully.</h2><p>Token used: ${tokenFromQuery}</p>`);
+        }
+      })();
+    } else {
+      showMessage('<h2>❌ Invalid or missing verification token.</h2>', false);
+    }
+  </script>
+
+  <!-- Detect system theme and switch logo / theme -->
+  <script>
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      document.body.classList.add('dark');
+      document.querySelector('html').setAttribute('data-theme', 'dark');
+      document.getElementById('logo').src = 'dummy_logo_light.png';
+    } else {
+      document.body.classList.remove('dark');
+      document.querySelector('html').setAttribute('data-theme', 'light');
+      document.getElementById('logo').src = 'dummy_logo_dark.png';
+    }
+  </script>
+</body>
+</html>
