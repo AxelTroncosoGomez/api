@@ -94,9 +94,6 @@
                 </div>
             </div>
         </div>
-        <!-- Alert Messages -->
-        <div id="alertContainer" class="mb-3"></div>
-        <div id="infoContainer" class="mb-3"></div>
     </div>
 
     <!-- Bootstrap 5 JS -->
@@ -120,9 +117,10 @@
         const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
         // Extract access_token from URL
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const params = new URLSearchParams(window.location.search);
-        const token = params.get("token");
-        const accessToken = params.get("access_token");
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
 
         // Authenticate temporarily
         if (accessToken) {
@@ -136,7 +134,7 @@
 
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
-            refresh_token: accessToken, // Just reuse it temporarily for recovery
+            refresh_token: refreshToken,
           });
 
           if (error) {

@@ -103,7 +103,8 @@
         if (error) {
           showMessage(`<h2>❌ Verification failed:</h2><p>${error.message}</p>`, false);
         } else {
-          showMessage(`<h2>✅ Email verified successfully.</h2><p>Token used: ${tokenFromQuery}</p>`);
+          // showMessage(`<h2>✅ Email verified successfully.</h2><p>Token used: ${tokenFromQuery}</p>`);
+          showMessage(`<h2>✅ Email verified successfully. You can close this window now</p>`);
         }
       })();
     } else {
