@@ -121,13 +121,15 @@
         const params = new URLSearchParams(window.location.search);
         const accessToken = hashParams.get('access_token');
         const refreshToken = hashParams.get('refresh_token');
+        const tokenFromQuery = searchParams.get('token');
 
         // Authenticate temporarily
         if (accessToken) {
           const infocontainer = document.getElementById("infoContainer");
           infocontainer.innerHTML = `
             <div class="alert alert-info alert-dismissible fade show" role="alert">
-              ${accessToken}
+              Token ${tokenFromQuery}
+              Acess Token ${accessToken}
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           `;
