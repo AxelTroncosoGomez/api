@@ -94,6 +94,9 @@
             </div>
         </div>
         <div id="infoContainer" class="mb-3"></div>
+        <div class="version-info position-fixed bottom-0 start-0 ps-3 pb-2 text-muted small">
+            v1.1.0
+        </div>
     </div>
 
     <!-- Bootstrap 5 JS -->
@@ -165,10 +168,8 @@
             
             if (!accessToken) {
                 showAlert('Invalid password reset link. Please request a new one.', 'danger');
-                document.getElementById('resetForm').style.display = 'none';
+                // document.getElementById('resetForm').style.display = 'none';
                 return;
-            } else {
-                showInfo('Access Token:' + accessToken);
             }
 
             // Set the session with the access token
@@ -179,7 +180,7 @@
 
             if (sessionError) {
                 showAlert('Error setting session: ' + sessionError.message, 'danger');
-                document.getElementById('resetForm').style.display = 'none';
+                // document.getElementById('resetForm').style.display = 'none';
                 return;
             }
 
@@ -221,7 +222,7 @@
                         showAlert('Error updating password: ' + error.message, 'danger');
                     } else {
                         showAlert('Password updated successfully! You can now log in with your new password.', 'success');
-                        document.getElementById('resetForm').style.display = 'none';
+                        // document.getElementById('resetForm').style.display = 'none';
                     }
                 } catch (err) {
                     showAlert('An unexpected error occurred: ' + err.message, 'danger');
@@ -232,10 +233,6 @@
             });
         });
     </script>
-    
-    <div class="version-info position-fixed bottom-0 start-0 ps-3 pb-2 text-muted small">
-        v1.0.0
-    </div>
 
     <!-- Initialize Feather Icons -->
     <script>
