@@ -99,11 +99,6 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-  <!-- JS Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    feather.replace();
-  </script>
     <!-- Supabase Client + Password Reset Logic -->
     <script type="module">
         // Change logo
@@ -115,53 +110,6 @@
         const supabaseUrl = 'https://nzfrskgdvdhdfghjtaks.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // (shortened for brevity)
         const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-        // Parse token from URL
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const searchParams = new URLSearchParams(window.location.search);
-
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-        // const tokenFromQuery = searchParams.get('token');
-        // const type = searchParams.get('type');
-
-        // Authenticate temporarily
-        if (accessToken && refreshToken) {
-            showInfo(accessToken)
-            const { data, error } = await supabase.auth.setSession({
-                access_token: accessToken,
-                refresh_token: refreshToken
-            });
-
-            if (error) {
-                showAlert("Invalid or expired recovery link.", "danger");
-            }
-        } else {
-            showAlert("No recovery token found. Please request a new password reset.", "danger");
-        }
-
-        // Form logic
-        const form = document.getElementById("resetForm");
-
-        form.addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const newPassword = document.getElementById("newPassword").value;
-          const confirmPassword = document.getElementById("confirmPassword").value;
-
-          if (newPassword !== confirmPassword) {
-            showAlert("Passwords do not match.", "danger");
-            return;
-          }
-
-          const { data, error } = await supabase.auth.updateUser({ password: newPassword });
-
-          if (error) {
-            showAlert("Failed to update password: " + error.message, "danger");
-          } else {
-            showAlert("Your password has been successfully updated!", "success");
-            form.reset();
-          }
-        });
 
         function showAlert(message, type = "info") {
           const container = document.getElementById("alertContainer");
@@ -193,7 +141,6 @@
             input.type = isPasswordHidden ? "text" : "password";
 
             // Swap the icon
-            // not working
             icon.setAttribute("data-feather", isPasswordHidden ? "eye" : "eye-off");
             feather.replace(); // Re-render Feather icons
         }
@@ -205,6 +152,85 @@
 
         document.getElementById("toggleConfirmPassword").addEventListener("click", () => {
             togglePasswordVisibility("confirmPassword", "toggleConfirmPassword");
+        });
+
+        // Password Reset Logic
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Extract the access token from the URL hash
+            const hash = window.location.hash.substring(1); // Remove the #
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get('access_token');
+            const tokenType = params.get('token_type');
+            
+            if (!accessToken) {
+                showAlert('Invalid password reset link. Please request a new one.', 'danger');
+                document.getElementById('resetForm').style.display = 'none';
+                return;
+            } else {
+                showAlert('Access Token:' + accessToken);
+            }
+
+            // Set the session with the access token
+            const { error: sessionError } = await supabase.auth.setSession({
+                access_token: accessToken,
+                token_type: tokenType,
+                expires_in: params.get('expires_in'),
+                refresh_token: params.get('refresh_token')
+            });
+
+            if (sessionError) {
+                showAlert('Error setting session: ' + sessionError.message, 'danger');
+                document.getElementById('resetForm').style.display = 'none';
+                return;
+            }
+
+            // Handle form submission
+            document.getElementById('resetForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // Show loading state
+                const btnText = document.querySelector('.btn-text');
+                const btnLoading = document.querySelector('.btn-loading');
+                btnText.classList.add('d-none');
+                btnLoading.classList.remove('d-none');
+                
+                // Validate passwords
+                if (newPassword !== confirmPassword) {
+                    showAlert('Passwords do not match!', 'danger');
+                    btnText.classList.remove('d-none');
+                    btnLoading.classList.add('d-none');
+                    return;
+                }
+                
+                if (newPassword.length < 8) {
+                    showAlert('Password must be at least 8 characters long!', 'danger');
+                    btnText.classList.remove('d-none');
+                    btnLoading.classList.add('d-none');
+                    return;
+                }
+                
+                try {
+                    // Update the user's password
+                    const { data, error } = await supabase.auth.updateUser({
+                        password: newPassword
+                    });
+                    
+                    if (error) {
+                        showAlert('Error updating password: ' + error.message, 'danger');
+                    } else {
+                        showAlert('Password updated successfully! You can now log in with your new password.', 'success');
+                        document.getElementById('resetForm').style.display = 'none';
+                    }
+                } catch (err) {
+                    showAlert('An unexpected error occurred: ' + err.message, 'danger');
+                } finally {
+                    btnText.classList.remove('d-none');
+                    btnLoading.classList.add('d-none');
+                }
+            });
         });
     </script>
     
