@@ -94,8 +94,8 @@
             </div>
         </div>
         <div id="infoContainer" class="mb-3"></div>
-        <div class="version-info position-fixed bottom-0 start-0 ps-3 pb-2 text-muted small">
-            v1.1.0
+        <div class="version-info position-fixed bottom-0 start-0 ps-3 pb-2 version-info-color small">
+            v1.2.0
         </div>
     </div>
 
@@ -136,26 +136,53 @@
 
         // Helper function to toggle password visibility and icon
         function togglePasswordVisibility(inputId, toggleBtnId) {
-            const input = document.getElementById(inputId);
-            const toggleBtn = document.getElementById(toggleBtnId);
-            const icon = toggleBtn.querySelector("i");
+            try {
+                const input = document.getElementById(inputId);
+                const toggleBtn = document.getElementById(toggleBtnId);
+                
+                if (!input || !toggleBtn) {
+                    console.error('Could not find input or toggle button elements');
+                    return;
+                }
 
-            const isPasswordHidden = input.type === "password";
-            input.type = isPasswordHidden ? "text" : "password";
+                const isPasswordHidden = input.type === "password";
+                input.type = isPasswordHidden ? "text" : "password";
 
-            // Swap the icon
-            icon.setAttribute("data-feather", isPasswordHidden ? "eye" : "eye-off");
-            feather.replace(); // Re-render Feather icons
+                // Find the icon element more reliably
+                const icon = toggleBtn.querySelector("i[data-feather]");
+                if (!icon) {
+                    console.error('Could not find Feather icon element');
+                    return;
+                }
+
+                // Swap the icon
+                icon.setAttribute("data-feather", isPasswordHidden ? "eye" : "eye-off");
+                
+                // Check if feather is available before calling replace
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
+                } else {
+                    console.error('Feather icons library not loaded');
+                }
+            } catch (error) {
+                console.error('Error in togglePasswordVisibility:', error);
+            }
         }
 
-        // Event listeners
-        document.getElementById("toggleNewPassword").addEventListener("click", () => {
-            togglePasswordVisibility("newPassword", "toggleNewPassword");
-        });
+        // Event listeners - with null checks
+        const newPasswordToggle = document.getElementById("toggleNewPassword");
+        if (newPasswordToggle) {
+            newPasswordToggle.addEventListener("click", () => {
+                togglePasswordVisibility("newPassword", "toggleNewPassword");
+            });
+        }
 
-        document.getElementById("toggleConfirmPassword").addEventListener("click", () => {
-            togglePasswordVisibility("confirmPassword", "toggleConfirmPassword");
-        });
+        const confirmPasswordToggle = document.getElementById("toggleConfirmPassword");
+        if (confirmPasswordToggle) {
+            confirmPasswordToggle.addEventListener("click", () => {
+                togglePasswordVisibility("confirmPassword", "toggleConfirmPassword");
+            });
+        }
 
         // Password Reset Logic
         document.addEventListener('DOMContentLoaded', async function() {
