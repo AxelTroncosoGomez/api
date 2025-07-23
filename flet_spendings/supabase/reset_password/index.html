@@ -107,9 +107,9 @@
 
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-        const supabaseUrl = 'https://nzfrskgdvdhdfghjtaks.supabase.co';
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // (shortened for brevity)
-        const supabase = createClient(supabaseUrl, supabaseAnonKey);
+        const supabaseUrl = "https://nzfrskgdvdhdfghjtaks.supabase.co";
+        const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56ZnJza2dkdmRoZGZnaGp0YWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1MzAwMTMsImV4cCI6MjA2ODEwNjAxM30.Y9ub1e4oaIDoIGXxoAJkC_WJtZVxknSlRpOfID0EYVE";
+        const supabaseServiceClient = createClient(supabaseUrl, supabaseAnonKey);
 
         function showAlert(message, type = "info") {
           const container = document.getElementById("alertContainer");
@@ -160,6 +160,7 @@
             const hash = window.location.hash.substring(1); // Remove the #
             const params = new URLSearchParams(hash);
             const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
             const tokenType = params.get('token_type');
             
             if (!accessToken) {
@@ -167,15 +168,13 @@
                 document.getElementById('resetForm').style.display = 'none';
                 return;
             } else {
-                showAlert('Access Token:' + accessToken);
+                showInfo('Access Token:' + accessToken);
             }
 
             // Set the session with the access token
-            const { error: sessionError } = await supabase.auth.setSession({
+            const { error: sessionError } = await supabaseServiceClient.auth.setSession({
                 access_token: accessToken,
-                token_type: tokenType,
-                expires_in: params.get('expires_in'),
-                refresh_token: params.get('refresh_token')
+                refresh_token: refreshToken
             });
 
             if (sessionError) {
@@ -214,7 +213,7 @@
                 
                 try {
                     // Update the user's password
-                    const { data, error } = await supabase.auth.updateUser({
+                    const { data, error } = await supabaseServiceClient.auth.updateUser({
                         password: newPassword
                     });
                     
